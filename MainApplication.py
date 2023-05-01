@@ -1,0 +1,2 @@
+class MainApplication:
+    pass
