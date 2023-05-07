@@ -5,8 +5,8 @@ from dbus_next.aio import MessageBus
 import asyncio
 
 
-class Core:
-    def __init__(self, mpris_name) -> None:
+class Worker:
+    def __init__(self, mpris_name:str) -> None:
         self.__song_name: str = ""
         self.__index: int = 0
         self.__original_lyrics: list = []
@@ -14,8 +14,10 @@ class Core:
 
         self.__position: int
         self.__timer: Timer = Timer(50,lambda: self.__set_postion(self.__position + 50))
-        self.__bus:MessageBus = asyncio.get_event_loop().run_until_complete(MessageBus().connect())
 
+        self.__mpris_name: str = mpris_name
+        self.__introspect
+        self.__connection
     def song_name(self) -> str:
         """
         The function returns the song name as a string.
@@ -52,3 +54,6 @@ class Core:
         """
         self.__position = position
         return
+
+async def create_worker(mpris_name:str) -> Worker:
+    bus = await MessageBus().connect()

@@ -7,7 +7,7 @@ from dbus_next.service import (ServiceInterface,
 import asyncio
 import inspect
 
-from Core import Core
+from Worker import Core
 
 class DBusAdaptor(ServiceInterface):
     """
