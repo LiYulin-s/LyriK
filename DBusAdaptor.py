@@ -5,16 +5,15 @@ from dbus_next.service import (ServiceInterface,
 #from dbus_next import Variant, DBusError
 
 import asyncio
-import inspect
 
-from Worker import Core
+from Unit import Unit, create_unit
 
 class DBusAdaptor(ServiceInterface):
     """
     The `DBusAdaptor` class is a service interface that adapts a `Core` object and provides properties
     that can be accessed through D-Bus.
     """
-    def __init__(self, name: str, adaptee: Core) -> None:
+    def __init__(self, name: str, adaptee: Unit) -> None:
         """constructor of DBusAdaptor
 
         Args:
@@ -51,11 +50,11 @@ class DBusAdaptor(ServiceInterface):
     
 async def main():
     bus = await MessageBus().connect()
-    core = Core()
+    core = await create_unit("yesplaymusic")
     adaptor = DBusAdaptor("test", core)
     bus.export('/com/test',adaptor)
+    await bus.request_name('com.example.name')
     await bus.wait_for_disconnect()
 
 if __name__ == "__main__":
-    main()
     asyncio.get_event_loop().run_until_complete(main())

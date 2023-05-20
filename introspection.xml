@@ -1,19 +1,4 @@
-from dbus_next.aio import MessageBus
-
-import asyncio
-
-async def main():
-    """
-    This function creates a Unit object for a given mpris media player name.
-
-    :param mpris_name: The name of the media player that you want to control using the MPRIS (Media
-    Player Remote Interfacing Specification) protocol. Examples of media players that support MPRIS
-    include VLC, Spotify, and Rhythmbox
-    :type mpris_name: str
-    """
-
-    introspection:str = '''
-    <!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
     <interface name="org.freedesktop.DBus.Introspectable">
         <method name="Introspect">
@@ -97,17 +82,3 @@ async def main():
         </signal>
     </interface>
 </node>
-    '''
-    bus: MessageBus = await MessageBus().connect()
-
-    proxy = bus.get_proxy_object(
-        "org.mpris.MediaPlayer2.yesplaymusic", "/org/mpris/MediaPlayer2", introspection
-    )
-    interface = proxy.get_interface("org.mpris.MediaPlayer2.Player")
-    pos = await interface.get_position()
-    return pos
-
-
-task = asyncio.get_event_loop().create_task(main())
-task.add_done_callback(lambda future: print(f"Position: {future.result()}"))
-asyncio.get_event_loop().run_until_complete(task)
