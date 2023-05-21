@@ -1,8 +1,0 @@
-{
-    "docwriter.progress.trackMethods": false,
-    "docwriter.style": "Auto-detect",
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.python"
-    },
-    "python.formatting.provider": "none"
-}
