@@ -1,10 +1,10 @@
-from threading import Timer
+from Timer import Timer
 
 from dbus_next.aio import MessageBus, ProxyInterface
-from dbus_next.introspection import Node
 
 import asyncio
 
+from DBusAdaptor import DBusAdaptor
 
 class Unit:
     def __init__(self, mpris_name: str, bus_interface: ProxyInterface) -> None:
@@ -14,12 +14,10 @@ class Unit:
         self.__translations: dict = dict()
 
         self.__position: int
-        self.__timer: Timer = Timer(
-            50, lambda: self.__set_postion(self.__interface.get)
-        )
-
+        self.__timer:Timer = Timer(0.05, self.__on_timer_triggered)
         self.__mpris_name: str = mpris_name
         self.__interface: ProxyInterface = bus_interface
+        self.__adaptor:DBusAdaptor = DBusAdaptor(mpris_name, self)
 
     def song_name(self) -> str:
         """
@@ -43,15 +41,12 @@ class Unit:
         """
         return self.__translations
 
-    def __set_postion(self, position: int) -> None:
-        """
-        This function sets the position of an object to a given integer value.
+    def __on_timer_triggered(self):
+        task:asyncio.Task = asyncio.get_event_loop().create_task(self.__interface.get_positon())
+        task.add_done_callback(self.__set_postion)
 
-        :param position: The `position` parameter is an integer value that represents the position of the. This method sets the value of the private attribute `__position` to the given `position`
-        value
-        :type position: int
-        """
-        self.__position = position
+    def __set_postion(self, future: asyncio.Future) -> None:
+        self.__position = future.result()
         return
 
 

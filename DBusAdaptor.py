@@ -49,7 +49,7 @@ class DBusAdaptor(ServiceInterface):
         return self.__adaptee.translations()
     
 async def main():
-    bus = await MessageBus().connect()
+    bus:MessageBus = await MessageBus().connect()
     core = await create_unit("yesplaymusic")
     adaptor = DBusAdaptor("test", core)
     bus.export('/com/test',adaptor)
