@@ -1,48 +1,81 @@
 from Timer import Timer
 
 from dbus_next.aio import MessageBus, ProxyInterface
+from dbus_next.introspection import Node
 
 import asyncio
 
 from DBusAdaptor import DBusAdaptor
 
+
 class Unit:
     def __init__(self, mpris_name: str, bus_interface: ProxyInterface) -> None:
+        """
+        The __init__ function is called when the class is instantiated.
+        It sets up the initial state of the object, and does any other
+        startup-type things that need to be done.
+
+        :param self: Refer to the current object
+        :param mpris_name: str: Identify the player that is currently playing
+        :param bus_interface: ProxyInterface: Create a interface object
+        :return: None
+        :doc-author: Trelent
+        """
         self.__song_name: str = ""
         self.__index: int = 0
         self.__original_lyrics: list = []
         self.__translations: dict = dict()
 
         self.__position: int
-        self.__timer:Timer = Timer(0.05, self.__on_timer_triggered)
+        self.__timer: Timer = Timer(0.05, self.__on_timer_triggered)
         self.__mpris_name: str = mpris_name
         self.__interface: ProxyInterface = bus_interface
-        self.__adaptor:DBusAdaptor = DBusAdaptor(mpris_name, self)
+        self.__adaptor: DBusAdaptor = DBusAdaptor(mpris_name, self)
 
     def song_name(self) -> str:
         """
-        The function returns the song name as a string.
-        :return: The method `song_name` is returning a string which is the value of the private
-        attribute `__song_name`.
+        The song_name function returns the name of the song.
+
+        :param self: Refer to the current instance of a class
+        :return: The song name
+        :doc-author: Trelent
         """
         return self.__song_name
 
     def index(self) -> int:
+        """
+        The index function returns the index of the current position in lyrics list.
+
+        :param self: Represent the instance of the object itself
+        :return: The index
+        :doc-author: Trelent
+        """
         return self.__index
 
     def original_lyrics(self) -> list:
+        """
+        The original_lyrics function returns the original lyrics of a song.
+
+        :param self: Refer to the current instance of the class
+        :return: The original lyrics of the song
+        :doc-author: Trelent
+        """
         return self.__original_lyrics
 
-    def translations(self) -> dict:
+    def translations(self) -> dict[str, list]:
         """
-        This function returns a dictionary of translations.
-        :return: A dictionary containing translations. The method `translations` is returning the
-        private attribute `__translations` of the object.
+        The translations function returns a dictionary of the form:
+        {'language': ['translation', 'translation', ...], ...}
+
+
+        :param self: Refer to the instance of the class
+        :return: A dictionary of the form {'language': ['translation', 'translation']}
+        :doc-author: Trelent
         """
         return self.__translations
 
     def __on_timer_triggered(self):
-        task:asyncio.Task = asyncio.get_event_loop().create_task(self.__interface.get_positon())
+        task: asyncio.Task = asyncio.get_event_loop().create_task(self.__interface.get_positon())
         task.add_done_callback(self.__set_postion)
 
     def __set_postion(self, future: asyncio.Future) -> None:
@@ -52,14 +85,14 @@ class Unit:
 
 async def create_unit(mpris_name: str) -> Unit:
     """
-    This function creates a Unit object for a given mpris media player name.
+    The create_unit function is a coroutine that returns an instance of the Unit class.
+    The function takes in one argument, mpris_name, which is a string representing the name of the MPRIS player to be controlled.
+    The function uses this name to create a proxy object for that specific player's D-Bus interface and then creates an instance of Unit with it.
 
-    :param mpris_name: The name of the media player that you want to control using the MPRIS (Media
-    Player Remote Interfacing Specification) protocol. Examples of media players that support MPRIS
-    include VLC, Spotify, and Rhythmbox
-    :type mpris_name: str
+    :param mpris_name: str: Create the unit
+    :return: A Unit object
+    :doc-author: Trelent
     """
-
     introspection:str = '''
     <!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
