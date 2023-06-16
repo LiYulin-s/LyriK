@@ -2,9 +2,11 @@ import asyncio
 
 from typing import Callable
 
+import weakref
+
 
 class Timer:
-    def __init__(self, interval: float, function: Callable, loop: asyncio.AbstractEventLoop) -> None:
+    def __init__(self, interval: float, function: Callable, loop: asyncio.AbstractEventLoop|None) -> None:
         """
         The __init__ function is the constructor for the class. It takes in three arguments:
         interval - The time between calls to function, in seconds.
@@ -21,7 +23,10 @@ class Timer:
         self.__interval = interval
         self.__function = function
         self.__is_running: bool = False
-        self.__loop = loop
+        if isinstance(loop,asyncio.AbstractEventLoop):
+            self.__loop = loop
+        else:
+            self.__loop = asyncio.get_event_loop()
 
     def start(self):
         self.__is_running = True

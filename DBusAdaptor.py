@@ -6,6 +6,8 @@ from dbus_next.service import (ServiceInterface,
 
 import asyncio
 
+import weakref
+
 from Unit import Unit, create_unit
 
 class DBusAdaptor(ServiceInterface):
@@ -22,7 +24,7 @@ class DBusAdaptor(ServiceInterface):
             adaptee (Core): the object provides all properties and accessed by this adaptor
         """
         super().__init__(f"org.LyriK.interface.{name}")
-        self.__adaptee = adaptee
+        self.__adaptee = weakref.proxy(adaptee)
 
     @signal()
     def PropertyChanged(self) -> None:

@@ -1,5 +1,9 @@
 from dbus_next.aio import MessageBus
 
+from DBusAdaptor import DBusAdaptor
+
+from Unit import Unit,create_unit
+
 import asyncio
 
 async def main():
@@ -105,6 +109,8 @@ async def main():
     )
     interface = proxy.get_interface("org.mpris.MediaPlayer2.Player")
     pos = await interface.get_position()
+    unit = await create_unit("yesplay")
+    adaptor = DBusAdaptor("yesplay",unit)
     return pos
 
 
