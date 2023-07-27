@@ -8,7 +8,7 @@ class AbstractAdaptor(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def __init__(self, name: str, adaptee: MprisWatcher):
+    def __init__(self, name: str, adaptee):
         pass
 
     @abc.abstractmethod

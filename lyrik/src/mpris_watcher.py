@@ -12,6 +12,7 @@ from typing import Callable
 
 from netwrok_interface import AbstractNetworkInterface, LyricsResponse
 from netease_music_interface import NeteaseMusicInterface
+from interface_manager import InterfaceManager, NetworkError, AllNoFoundError
 
 class MprisWatcher:
     introspection: str = """
@@ -128,7 +129,7 @@ class MprisWatcher:
 
         self.__mpris_name: str = mpris_name
 
-        self.__network_interface: list[AbstractNetworkInterface] = []
+        self.__network_interface: InterfaceManager = InterfaceManager(None, {"Disabled": [], "Priority": ["NeteaseMusicInterface"]})
 
         self.__position = 0
 
@@ -150,9 +151,6 @@ class MprisWatcher:
         )
         self.position_changed: asyncio.Event = asyncio.Event()
         self.song_changed: asyncio.Event = asyncio.Event()
-
-        for class_type in AbstractNetworkInterface.__subclasses__():
-            self.__network_interface.append(class_type())
 
     def add_callable(self, func: Callable) -> None:
         """
@@ -254,8 +252,8 @@ class MprisWatcher:
                     self.__title = metadata["xesam:title"].value
                     self.__album = metadata["xesam:album"].value
                     self.__artist = metadata["xesam:artist"].value
-                    response: LyricsResponse = await self.__network_interface[0].get_lyrics(
-                        self.__title, self.__album, self.__artist
+                    response: LyricsResponse = await self.__network_interface.get_lyrics(
+                        self.__title, self.__album, self.__artist, True
                     )
                     if response is None:
                         self.__index = -1

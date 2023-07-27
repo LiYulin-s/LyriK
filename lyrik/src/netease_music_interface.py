@@ -1,4 +1,4 @@
-from pycloudmusic.object.music163 import Music, Album
+from pycloudmusic.object.music163 import Music
 
 from netwrok_interface import (
     AbstractNetworkInterface,
@@ -20,7 +20,8 @@ class NeteaseMusicInterface(AbstractNetworkInterface):
     def __init__(self) -> None:
         self.__api = Music163Api()
 
-    def name(self):
+    @classmethod
+    def name(cls) -> str:
         return "NeteaseMusicInterface"
 
     async def get_lyrics(
@@ -53,6 +54,7 @@ class NeteaseMusicInterface(AbstractNetworkInterface):
                             None
                             if lyrics["tlyric"]["lyric"] == ""
                             else {"zh_CN": lyrics["tlyric"]["lyric"]},
+                            self.name()
                         )
                     elif hazy_search:
                         weight = 0
@@ -74,6 +76,7 @@ class NeteaseMusicInterface(AbstractNetworkInterface):
             None
             if lyrics["tlyric"]["lyric"] == ""
             else {"zh_CN": lyrics["tlyric"]["lyric"]},
+            self.name()
         )
 
 

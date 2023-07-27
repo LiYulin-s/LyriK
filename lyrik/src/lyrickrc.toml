@@ -1,0 +1,12 @@
+[General]
+Interval = 50
+
+[Interface]
+All = []
+Disabled = []
+Priority = ["NeteaseMusic"]
+WaitTime = 50
+
+[Adaptor]
+All = []
+Disabled = []

@@ -4,23 +4,9 @@ from dbus_next.aio import MessageBus
 from dbus_next.service import ServiceInterface, dbus_property, PropertyAccess, signal
 
 import asyncio
-import weakref
 
 from mpris_watcher import MprisWatcher
-
-
-class AbstractAdaptor(abc.ABC):
-    @abc.abstractmethod
-    def __init__(self, name: str, adaptee: MprisWatcher):
-        pass
-
-    @abc.abstractmethod
-    async def create_service(self) -> None:
-        pass
-
-    @abc.abstractmethod
-    async def create_interface(self, name: str) -> None:
-        pass
+from adaptor import AbstractAdaptor
 
 
 class DBusAdaptor(AbstractAdaptor, ServiceInterface):
@@ -28,6 +14,10 @@ class DBusAdaptor(AbstractAdaptor, ServiceInterface):
     The `DBusAdaptor` class is a service interface that adapts a `Core` object and provides properties
     that can be accessed through D-Bus.
     """
+
+    @classmethod
+    def name(cls):
+        return "DBusAdaptor"
 
     def __init__(self, bus: MessageBus, name: str, adaptee: MprisWatcher) -> None:
         ServiceInterface.__init__(self, f"org.LyriK.interface.{name}")

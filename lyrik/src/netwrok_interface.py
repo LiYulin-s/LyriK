@@ -1,42 +1,40 @@
 import abc
-import asyncio
-import json
-
-import aiohttp
 from loguru import logger
 
 
 class LyricsResponse:
     def __init__(
-        self, hazy_search: bool, lyrics: str, translation: dict[str:str] or None
+            self, hazy_search: bool, lyrics: str, translation: dict[str, str] | None, interface: str
     ):
         self.hazy = hazy_search
         self.lyrics = lyrics
         self.translation = translation
+        self.interface = interface
 
     def __repr__(self) -> str:
-        return f"<network_interface.LyricsResponse lyrics='{self.lyrics}' hazy={self.hazy} translation={self.translation}>"
+        return f"<network_interface.LyricsResponse lyrics='{self.lyrics}' hazy={self.hazy} translation={self.translation} interface={self.interface}>"
 
 
 class AbstractNetworkInterface(abc.ABC):
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def name(cls) -> str:
         pass
 
     @abc.abstractmethod
     async def get_lyrics(
-        self, title: str, album: str, artist: list, hazy_search=True
+            self, title: str, album: str, artist: list, hazy_search=True
     ) -> LyricsResponse:
         pass
 
 
 class NoFoundError(Exception):
     def __init__(
-        self,
-        interface: AbstractNetworkInterface,
-        title: str,
-        artist: list[str],
-        album: str,
+            self,
+            interface: AbstractNetworkInterface,
+            title: str,
+            artist: list[str],
+            album: str,
     ) -> None:
         self.__interface = interface
         self.__title = title
