@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "LyriK"
+version = "0.1.0"
+description = "Provide lyrics service through D-Bus."
+authors = ["Lee_yurin <liyulin.self@foxmail.com>"]
+license = "GPLv3"
+readme = "README.md"
+keywords = ["lyrics", "dbus"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pycloudmusic = "^0.1.4.5"
+loguru = "^0.7.0"
+dbus-next = "^0.2.3"
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
